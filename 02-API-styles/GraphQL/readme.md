@@ -1,5 +1,10 @@
 # GraphQl
-[Learn GraphQL from How to graphql](https://www.howtographql.com/)
+#### 🚀 Read resources
+1. [Learn GraphQL from How to graphql](https://www.howtographql.com/)
+
+2. [Learn GraphQL from graphql.js org](https://www.graphql-js.org/docs/graphql-clients/)
+
+3. [Learn GraphQL from official](https://graphql.org/learn/)
 ## Introduction
 GraphQL is a query language for your API, and a server-side runtime for executing queries using a type system you define for your data
 Allows clients to query exactly what they want within a single request reducing over fetching and underfetching problems
