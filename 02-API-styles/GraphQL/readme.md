@@ -180,3 +180,128 @@ The Query, Mutation, and Subscription types are the entry points for the request
 
 ### Graphql on the frontend
 GraphQL on the frontend enables efficient data fetching with clients like Apollo, URQL, or Relay. It provides declarative data requirements, intelligent caching, real-time subscriptions, and type safety, allowing frontend applications to request exactly the data they need in a single query.
+
+Graphql abstracts away the low level networking clients have to implement to fetch an update data
+
+In terms of updating the UI graphql works well with functional reactive programming layer of your choice eg react
+
+When it comes to catching graphql clients normalize the data before hand before its stored and is referenced with a globally unique ID
+### Graphql on the Backend
+On the server side the developer focuses on describing the data that is available rather than implementing and optimizing endpoints
+
+## Schema and types
+Graphql provides a type system that describeswhat data can be queried from the API, clienst use the schema to send queries that return predictable results
+
+Graphql query language is basically about selecting fields in on objects
+###### Example query
+```js                                         
+{                                 
+  hero {
+    name
+    appearsIn
+  }
+}                 
+```
+###### Response
+```js
+{
+  "data": {
+    "hero": {
+      "name": "R2-D2",
+      "appearsIn": [
+        "NEWHOPE",
+        "EMPIRE",
+        "JEDI"
+      ]
+    }
+  }
+}
+```
+- We start with a special root object
+- Then we select the hero field in that object
+- Then we select the name and apperas field in the returned hero object
+### Object types and fields
+```js
+type Character {
+  name: String!
+  appearsIn: [Episode!]!
+}
+```
+#### Explanation
+- Character is a GraphQL Object type, meaning it’s a type with some fields. Most of the types in your schema will be Object types.
+
+- name and appearsIn are fields on the Character type. That means that name and appearsIn are the only fields that can appear in any part of a GraphQL query that operates on the Character type.
+
+- String is one of the built-in Scalar types. These are types that resolve to a single scalar value and can’t have sub-selections in the query. We’ll go over Scalar types more later.
+
+- String! means that the field is a Non-Null type, meaning the GraphQL service promises to give you a value whenever you query this field. In SDL, we represent those with an exclamation mark.
+
+- [Episode!]! represents a List type of Episode objects. When a List is Non-Null, you can always expect an array (with zero or more items) when you query the appearsIn field. In this case, since Episode! is also Non-Null within the list, you can always expect every item in the array to be an Episode object.
+
+#### Arguments
+Every field can have zero or more arguments
+```js
+type Starship {
+  id: ID!
+  name: String!
+  length(unit: LengthUnit = METER): Float
+}
+```
+Here the length field has an optional argument called unit if ts not provided its default value will be METER
+#### The Query, Mutation, and Subscription types
+##### Query
+Every graphql schema must have query operations
+###### Example query
+```js
+{
+  droid(id: "2000") {
+    name
+  }
+}
+```
+###### Response
+```js
+{
+  "data": {
+    "droid": {
+      "name": "C-3PO"
+    }
+
+  }
+}
+```
+This means that the graphql service must have a query operation type in the schema that looks like
+```js
+type Query {
+  droid(id: ID!): Droid
+}
+```
+Other root operations type like mutation and subscriptions can also be included
+
+Graphql needs to be indormed when u change the names of the root operation types to custom names like this
+```js
+schema {
+  query: MyQueryType
+  mutation: MyMutationType
+  subscription: MySubscriptionType
+}
+```
+#### Scalar types 
+Represent the leaf values of a query
+
+- Int: A signed 32‐bit integer.
+- Float: A signed double-precision floating-point value.
+- String: A UTF‐8 character sequence.
+- Boolean: true or false.
+- ID: A unique identifier, often used to refetch an object or as the key for a cache. The ID type is serialized in the same way as a String; however, defining it as an ID signifies that it is not intended to be human‐readable
+
+In most GraphQL service implementations, there is also a way to specify custom Scalar types. For example, we could define a Date type:
+```js
+scalar Date
+```
+Then it’s up to our implementation to define how that type should be serialized, deserialized, and validated
+#### Type modifiers
+Include non-null and list
+
+## Queries
+Used to fetch data from a graphql server
